@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player : Character
 {
+    Joystick joystick;
+    Vector2 direction => joystick.Direction;
     public Player()
     {
         
@@ -11,6 +13,7 @@ public class Player : Character
     public override void Init(GameObject gameObject)
     {
         base.Init(gameObject);
+        joystick = Utils.GetUI<FloatingJoystick>();
         
     }
 }

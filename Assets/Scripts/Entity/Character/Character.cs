@@ -4,9 +4,15 @@ using UnityEngine;
 
 public abstract class Character : Entity
 {
-    Rigidbody rigidbody;
+    protected Animator animator;
+    protected Rigidbody rigidbody;
     public override void Init(GameObject gameObject)
     {
         rigidbody = gameObject.GetComponent<Rigidbody>();
+        animator = gameObject.GetComponent<Animator>();
+    }
+    protected bool IsAnimatorable()
+    {
+        return true;
     }
 }
