@@ -5,10 +5,14 @@ using UnityEngine;
 public class EntityMono : MonoBehaviour
 {
     Entity entity;
-
+    private void Start()
+    {
+        entity = new Player();
+        entity.Init(gameObject);
+    }
     private void Update()
     {
-        entity.lifecycleEventActions.GetValueOrDefault(LifecycleEventType.Update)?.Invoke();
+        entity?.lifecycleEventActions.GetValueOrDefault(LifecycleEventType.Update)?.Invoke();
     }
     private void HandleEvent(PhysicsEventType eventType, object data)
     {

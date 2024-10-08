@@ -8,17 +8,16 @@ using UnityEngine;
 public abstract class Entity
 {
     public Dictionary<LifecycleEventType, Action> lifecycleEventActions =
-    Enum.GetValues(typeof(LifecycleEventType)).Cast<LifecycleEventType>()
-        .ToDictionary(eventType => eventType, eventType => (Action)(() => { }));
+        Enum.GetValues(typeof(LifecycleEventType)).Cast<LifecycleEventType>()
+            .ToDictionary(eventType => eventType, eventType => default(Action));
 
     public Dictionary<PhysicsEventType, Action<Collider>> triggerEventActions =
         Enum.GetValues(typeof(PhysicsEventType)).Cast<PhysicsEventType>()
-            .ToDictionary(eventType => eventType, eventType => (Action<Collider>)(collider => { }));
+            .ToDictionary(eventType => eventType, eventType => default(Action<Collider>));
 
     public Dictionary<PhysicsEventType, Action<Collision>> collisionEventActions =
         Enum.GetValues(typeof(PhysicsEventType)).Cast<PhysicsEventType>()
-            .ToDictionary(eventType => eventType, eventType => (Action<Collision>)(collision => { }));
-
+            .ToDictionary(eventType => eventType, eventType => default(Action<Collision>));
 
     public abstract void Init(GameObject gameObject);
 }
