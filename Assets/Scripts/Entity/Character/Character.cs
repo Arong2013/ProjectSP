@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class Character : Entity
 {
     CombatStats combatStats = new CombatStats();
+    protected CharacterStateMachine characterStateMachine = new CharacterStateMachine();
     protected Animator animator;
     protected Rigidbody rigidbody;
     string currentAnimeState = default;

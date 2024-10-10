@@ -17,15 +17,15 @@ public class Player : Character
     public override void Init(GameObject gameObject)
     {
         base.Init(gameObject);
-  
-  
-        inventory = new Inventory(this,IvnentoryItems,survivalStats.inventoryCapacity);
+
+
+        inventory = new Inventory(this, IvnentoryItems, survivalStats.inventoryCapacity);
         joystick = Utils.GetUI<FloatingJoystick>();
-  
-  
+
+
         lifecycleEventActions[LifecycleEventType.Update] = Move;
     }
-    void Move() { SimpleMove(direction); }
+    void Move() { if (characterStateMachine.AddState(CharacterState.Moving)) SimpleMove(direction); }
 
     public void EquipmentWeapon()
     {
