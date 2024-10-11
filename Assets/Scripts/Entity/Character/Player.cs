@@ -5,19 +5,25 @@ using UnityEngine;
 
 public class Player : Character
 {
+    
+    [SerializeField] Transform RightHand;
     SurvivalStats survivalStats = new SurvivalStats();
     List<Item> IvnentoryItems;
     Joystick joystick;
     Vector3 direction => joystick.Direction;
     Inventory inventory;
-    public Player()
+    [SerializeField] MeleeWeaponController meleeWeaponController;
+    private void Start()
     {
-
+        Init();
     }
-    public override void Init(GameObject gameObject)
+    private void Update()
     {
-        base.Init(gameObject);
-
+        lifecycleEventActions[LifecycleEventType.Update]?.Invoke();
+    }
+    public override void Init()
+    {
+        base.Init();
 
         inventory = new Inventory(this, IvnentoryItems, survivalStats.inventoryCapacity);
         joystick = Utils.GetUI<FloatingJoystick>();
@@ -25,10 +31,9 @@ public class Player : Character
 
         lifecycleEventActions[LifecycleEventType.Update] = Move;
     }
-    void Move() { if (characterStateMachine.AddState(CharacterState.Moving)) SimpleMove(direction); }
-
-    public void EquipmentWeapon()
+    void Move() { SimpleMove(direction); }
+    void MeleeAttack()
     {
-
+        base.MeleeAttack(meleeWeaponController);
     }
 }

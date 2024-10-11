@@ -12,10 +12,11 @@ public enum CharacterState
     Reloading,  // 리로드 중
     Dodging,    // 회피 중
     Blocking,   // 방어 중
-    Healing     // 회복 중
+    Healing,     // 회복 중
+    Damgeing
 }
 
-
+[System.Serializable]
 public class CharacterStateMachine
 {
     // 현재 활성화된 상태를 저장하는 HashSet
@@ -23,11 +24,8 @@ public class CharacterStateMachine
     private HashSet<CharacterState> activeStates = new HashSet<CharacterState>();
 
     // 상태별 우선순위를 정의하는 딕셔너리 (Odin Inspector에서 편집 가능하게 표시)
-    [ShowInInspector, OdinSerialize, DictionaryDrawerSettings(KeyLabel = "State", ValueLabel = "Priority")]
-    private Dictionary<CharacterState, int> statePriority = new Dictionary<CharacterState, int>();
-
-     // 상태 추가 가능 여부를 확인하는 메서드 (우선순위 비교)
-    // 상태 추가 (우선순위가 높을 경우 낮은 우선순위 상태를 제거, 성공 여부 반환)
+    [ShowInInspector,OdinSerialize, DictionaryDrawerSettings(KeyLabel = "State", ValueLabel = "Priority")]
+    Dictionary<CharacterState, int> statePriority;
     public bool AddState(CharacterState newState)
     {
         int currentHighestPriority = GetHighestPriority();

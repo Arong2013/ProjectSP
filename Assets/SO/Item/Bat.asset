@@ -44,7 +44,67 @@ MonoBehaviour:
       Data: 0|MeleeWeaponItem, Assembly-CSharp
     - Name: Durability
       Entry: 3
+      Data: 100
+    - Name: combatStats
+      Entry: 7
+      Data: 1|CombatStats, Assembly-CSharp
+    - Name: maxHP
+      Entry: 7
+      Data: 2|Stat, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
       Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: currentHP
+      Entry: 7
+      Data: 3|Stat, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: speed
+      Entry: 7
+      Data: 4|Stat, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: attack
+      Entry: 7
+      Data: 5|Stat, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: defense
+      Entry: 7
+      Data: 6|Stat, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: criticalChance
+      Entry: 7
+      Data: 7|Stat, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: weaponPrefab
       Entry: 6
       Data: 

@@ -117,6 +117,7 @@ public class ArmorItem : EquipmentItem
 public abstract class EquipmentItem : Item
 {
     public int Durability;
+    public CombatStats combatStats = new CombatStats();
 
     public override bool IsEmpty()
     {
