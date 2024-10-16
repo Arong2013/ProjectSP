@@ -16,3 +16,16 @@ public enum PhysicsEventType
     OnCollisionStay,
     OnTriggerStay,
 }
+
+
+public abstract class EnemyHFSMState
+{
+    public abstract void EnterState();
+    public abstract void UpdateState();
+    public abstract void ExitState();
+}
+
+public interface IInteractable
+{
+    void Interact(); 
+}

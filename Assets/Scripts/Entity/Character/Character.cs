@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DungeonArchitect.Samples.GridFlow;
 using UnityEngine;
 
 public abstract class Character : Entity
@@ -7,20 +8,26 @@ public abstract class Character : Entity
     CombatStats combatStats = new CombatStats();
     [SerializeField] protected CharacterStateMachine characterStateMachine = new CharacterStateMachine();
     protected Animator animator;
-    protected Rigidbody rigidbody;
+    protected Rigidbody rb;
     string currentAnimeState = default;
 
     public override void Init()
     {
-        rigidbody = gameObject.GetComponent<Rigidbody>();
+        rb = gameObject.GetComponent<Rigidbody>();
         animator = gameObject.GetComponent<Animator>();
+
+        if (rb == null || animator == null)
+        {
+            Debug.LogError("Required components missing on character!");
+        }
     }
-    protected bool IsAnimatorable()
-    {
-        return true;
-    }
+
+    protected bool IsAnimatorable() => animator != null;
+
     protected void SimpleMove(Vector3 direction)
     {
+        if (!IsAnimatorable()) return;
+
         // Z축 값은 0으로 고정하여 위아래로 움직이지 않도록 처리
         direction.z = 0;
 
@@ -34,50 +41,56 @@ public abstract class Character : Entity
             animator.CrossFade(targetAnimation, 0.1f);
         }
 
-        // Z축이 고정된 방향으로 이동 처리
-        rigidbody.MovePosition(rigidbody.position + direction * combatStats.speed.Value * baseSpeed * Time.deltaTime);
+        rb.MovePosition(rb.position + direction * combatStats.speed.Value * baseSpeed * Time.deltaTime);
 
         // 회전 처리 (Z축 회전은 무시, 평면상 회전만)
-        if (directionMagnitude > 0.1f) // 방향이 있는 경우에만 회전
+        if (directionMagnitude > 0.1f) 
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-            rigidbody.rotation = Quaternion.Slerp(rigidbody.rotation, targetRotation, Time.deltaTime * 10f);
+            rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, Time.deltaTime * 10f);
         }
     }
 
-
-    public void MeleeAttack(MeleeWeaponController weaponContoller)
+    public void MeleeAttack(MeleeWeaponController weaponController)
     {
         if (characterStateMachine.AddState(CharacterState.Attacking))
         {
             StartCoroutine(HandleWeaponCollider());
-        }
 
-        IEnumerator HandleWeaponCollider()
-        {
-            animator.CrossFade("MeleeAttack", 0.1f);
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            yield return new WaitForSeconds(stateInfo.length * 0.2f);
-            weaponContoller.EnableCollider(true);
-            while (stateInfo.normalizedTime < 0.8f)
+            IEnumerator HandleWeaponCollider()
             {
-                if (animator.GetCurrentAnimatorStateInfo(0).fullPathHash != stateInfo.fullPathHash)
+                if (!IsAnimatorable()) yield break;
+
+                animator.CrossFade("MeleeAttack", 0.1f);
+                AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+                yield return new WaitForSeconds(stateInfo.length * 0.2f);
+                weaponController.EnableCollider(true);
+
+                while (stateInfo.normalizedTime < 0.8f)
                 {
-                    weaponContoller.EnableCollider(false);
-                    yield break;
+                    if (animator.GetCurrentAnimatorStateInfo(0).fullPathHash != stateInfo.fullPathHash)
+                    {
+                        weaponController.EnableCollider(false);
+                        yield break;
+                    }
+                    stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+                    yield return null;
                 }
-                stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-                yield return null; // 다음 프레임까지 대기
+                weaponController.EnableCollider(false);
             }
-            weaponContoller.EnableCollider(false);
         }
     }
-    public void TakeDamage(float damge)
+
+    public void TakeDamage(float damage)
     {
         if (characterStateMachine.AddState(CharacterState.Damgeing))
         {
-            combatStats.currentHP.AddModifier(new StatModifier(-damge, StatModType.Flat));
-            animator.CrossFade("TakeDamge", 0.1f);
+            combatStats.currentHP.AddModifier(new StatModifier(-damage, StatModType.Flat));
+            if (IsAnimatorable())
+            {
+                animator.CrossFade("TakeDamage", 0.1f);
+            }
         }
     }
 }
+
