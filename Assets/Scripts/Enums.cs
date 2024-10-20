@@ -18,7 +18,7 @@ public enum PhysicsEventType
 }
 
 
-public abstract class EnemyHFSMState
+public abstract class HFSMState
 {
     public abstract void EnterState();
     public abstract void UpdateState();

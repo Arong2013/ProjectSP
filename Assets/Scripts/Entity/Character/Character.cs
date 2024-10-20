@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class Character : Entity
 {
     CombatStats combatStats = new CombatStats();
-    [SerializeField] protected CharacterStateMachine characterStateMachine = new CharacterStateMachine();
+    public CharacterStateMachine characterStateMachine = new CharacterStateMachine();
     protected Animator animator;
     protected Rigidbody rb;
     string currentAnimeState = default;
@@ -22,6 +22,8 @@ public abstract class Character : Entity
         }
     }
 
+    public abstract bool IsFOVInRange(Transform target);
+    public abstract bool IsInAttackRange(Transform target);
     protected bool IsAnimatorable() => animator != null;
 
     protected void SimpleMove(Vector3 direction)
@@ -44,7 +46,7 @@ public abstract class Character : Entity
         rb.MovePosition(rb.position + direction * combatStats.speed.Value * baseSpeed * Time.deltaTime);
 
         // 회전 처리 (Z축 회전은 무시, 평면상 회전만)
-        if (directionMagnitude > 0.1f) 
+        if (directionMagnitude > 0.1f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
             rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, Time.deltaTime * 10f);

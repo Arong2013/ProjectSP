@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class IdleState : EnemyHFSMState
+public class IdleState : HFSMState
 {
-    private Enemy Enemy;
+    private Character character;
 
-    public IdleState(Enemy Enemy)
+    public IdleState(Character character)
     {
-        this.Enemy = Enemy;
+        this.character = character;
     }
 
     public override void EnterState()
@@ -18,28 +18,24 @@ public class IdleState : EnemyHFSMState
 
     public override void UpdateState()
     {
-        // 플레이어와의 거리를 확인
-        if (Enemy.IsPlayerInRange())
-        {
-            Enemy.stateMachine.ChangeState(Enemy.chaseState);
-        }
-    }
 
+    }
     public override void ExitState()
     {
         // 필요한 경우 상태를 종료할 때 처리
     }
 }
-
-public class ChaseState : EnemyHFSMState
+public class ChaseState : HFSMState
 {
-    private Enemy Enemy;
+    private Character character;
     private NavMeshAgent agent;
 
-    public ChaseState(Enemy Enemy)
+    private Transform target;
+    public ChaseState(Character character, Transform transform)
     {
-        this.Enemy = Enemy;
-        agent = Enemy.GetComponent<NavMeshAgent>();
+        this.character = character;
+        this.target = transform;
+        agent = character.GetComponent<NavMeshAgent>();
     }
 
     public override void EnterState()
@@ -50,20 +46,17 @@ public class ChaseState : EnemyHFSMState
     public override void UpdateState()
     {
         // 플레이어를 추적
-        if (Enemy.IsPlayerInRange())
+        if (character.IsFOVInRange(target))
         {
-            agent.SetDestination(Enemy.player.position);
+            agent.SetDestination(target.position);
         }
         else
         {
-            // 플레이어가 범위를 벗어나면 Idle 상태로 전환
-            Enemy.stateMachine.ChangeState(Enemy.idleState);
+            character.characterStateMachine.ChangeState(new IdleState(character));
         }
-
-        // 만약 공격 범위에 들어오면 Attack 상태로 전환
-        if (Enemy.IsPlayerInAttackRange())
+        if (character.IsInAttackRange(target))
         {
-            Enemy.stateMachine.ChangeState(Enemy.attackState);
+            character.characterStateMachine.ChangeState(new AttackState(character,target));
         }
     }
 
@@ -72,14 +65,14 @@ public class ChaseState : EnemyHFSMState
         agent.isStopped = true; // 추적 중지
     }
 }
-
-public class AttackState : EnemyHFSMState
+public class AttackState : HFSMState
 {
-    private Enemy Enemy;
-
-    public AttackState(Enemy Enemy)
+    private Character character;
+    private Transform target;
+    public AttackState(Character character,Transform target)
     {
-        this.Enemy = Enemy;
+        this.character = character;
+        this.target = target;
     }
 
     public override void EnterState()
@@ -88,10 +81,9 @@ public class AttackState : EnemyHFSMState
 
     public override void UpdateState()
     {
-        // 공격 상태에서 일정 시간이 지나면 다시 추적 상태로 전환
-        if (!Enemy.IsPlayerInAttackRange())
+        if (!character.IsInAttackRange(target))
         {
-            Enemy.stateMachine.ChangeState(Enemy.chaseState);
+            character.characterStateMachine.ChangeState(new ChaseState(character,target));
         }
     }
 

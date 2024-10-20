@@ -6,10 +6,6 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
 {
-    public Dictionary<LifecycleEventType, Action> lifecycleEventActions =
-        Enum.GetValues(typeof(LifecycleEventType)).Cast<LifecycleEventType>()
-            .ToDictionary(eventType => eventType, eventType => default(Action));
-
     public Dictionary<PhysicsEventType, Action<Collider>> triggerEventActions =
         Enum.GetValues(typeof(PhysicsEventType)).Cast<PhysicsEventType>()
             .ToDictionary(eventType => eventType, eventType => default(Action<Collider>));

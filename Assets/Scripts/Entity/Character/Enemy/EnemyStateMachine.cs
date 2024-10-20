@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class EnemyStateMachine
+public class CharacterStateMachine
 {
-    private EnemyHFSMState currentState;
+    private HFSMState currentState;
 
-    public void Initialize(EnemyHFSMState startingState)
+    public void Initialize(HFSMState startingState)
     {
         currentState = startingState;
         startingState.EnterState();
     }
 
-    public void ChangeState(EnemyHFSMState newState)
+    public void ChangeState(HFSMState newState)
     {
         currentState.ExitState();
         currentState = newState;

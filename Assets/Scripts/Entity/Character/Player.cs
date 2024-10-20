@@ -12,8 +12,6 @@ public class Player : Character
     Vector3 direction => joystick.Direction;
     Inventory inventory;
     [SerializeField] MeleeWeaponController meleeWeaponController;
-    [SerializeField] float jumpForce = 5f; // 추가된 필드
-
     private void Start()
     {
         Init();
@@ -21,8 +19,7 @@ public class Player : Character
 
     private void Update()
     {
-        lifecycleEventActions[LifecycleEventType.Update]?.Invoke();
-        HandleTouchInput();
+       
     }
 
     public override void Init()
@@ -31,30 +28,18 @@ public class Player : Character
 
         inventory = new Inventory(this, InventoryItems, survivalStats.inventoryCapacity);
         joystick = Utils.GetUI<FloatingJoystick>();
-
-        lifecycleEventActions[LifecycleEventType.Update] = Move;
     }
 
     void Move() { SimpleMove(direction); }
     void MeleeAttack() { base.MeleeAttack(meleeWeaponController); }
 
-    void HandleTouchInput()
+    public override bool IsFOVInRange(Transform target)
     {
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
+        return true;
+    }
 
-            if (touch.phase == TouchPhase.Began)
-            {
-                Ray ray = Camera.main.ScreenPointToRay(touch.position);
-                RaycastHit hit;
-
-                if (Physics.Raycast(ray, out hit))
-                {
-                    IInteractable interactable = hit.collider.GetComponent<IInteractable>();
-                    interactable?.Interact();
-                }
-            }
-        }
+    public override bool IsInAttackRange(Transform target)
+    {
+        return true;
     }
 }
